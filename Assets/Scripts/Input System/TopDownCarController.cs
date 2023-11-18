@@ -9,11 +9,7 @@ public class TopDownCarController : MonoBehaviour
     public float driftFactor = 0.95f;
     public float turnFactor = 0.1f;
     public float speed = 0;
-    float minSpeed;
-
-    // Components
-    private Dictionary<PowerUpType, Coroutine> activePowerUps = new Dictionary<PowerUpType, Coroutine>();
-    private Dictionary<PowerUpType, float> powerUpDurations = new Dictionary<PowerUpType, float>();
+    public float minSpeed;
 
     private Rigidbody2D rb;
     private PlayerData playerData;
@@ -29,16 +25,16 @@ public class TopDownCarController : MonoBehaviour
     {
         // Getting GameObject Components
         rb = GetComponent<Rigidbody2D>();
-        playerData = PlayerData.Instance;
+        playerData = Load.LoadPlayer();
         SpriteRenderer renderer = GetComponent<SpriteRenderer>();
 
         playerData.rb = rb;
-        playerData.AddCarToPlayer(CarManager.GetCar(CarManager.CarType.BlueF1Car));
-        playerData.SetCar(playerData.GetCarList()[0]);
         renderer.sprite = playerData.GetCar().Texture;
         speed = playerData.GetCar().Speed;
         minSpeed = playerData.GetCar().Speed;
+
         gameObject.AddComponent<PolygonCollider2D>();
+        gameObject.AddComponent<PowerUpHandler>();
     }
 
     // Update is called once per frame and is frame dependent
@@ -168,90 +164,4 @@ public class TopDownCarController : MonoBehaviour
         return speed;
     }
 
-    public void ApplyPowerUpEffect(PowerUpType powerUpType, float dur)
-    {
-        float buffValue = CollectibleDatabase.GetPowerUp(powerUpType).BuffValue;
-
-        if (activePowerUps.ContainsKey(powerUpType) && powerUpDurations.ContainsKey(powerUpType))
-        {
-            // Update the duration of the existing coroutine
-            StopCoroutine(activePowerUps[powerUpType]);
-            activePowerUps.Remove(powerUpType);
-            dur += powerUpDurations[powerUpType];
-            powerUpDurations.Remove(powerUpType);
-        }
-        else
-        {
-            // Apply the power-up effect
-            ApplyEffect(powerUpType, buffValue);
-        }
-
-        // Start a new coroutine for the updated duration
-        powerUpDurations[powerUpType] = dur;
-        Coroutine coroutine = StartCoroutine(RemovePowerUpEffectAfterDuration(powerUpType));
-        activePowerUps[powerUpType] = coroutine;
-
-    }
-
-    // Remove a power-up effect when its duration expires
-    private IEnumerator RemovePowerUpEffectAfterDuration(PowerUpType powerUpType)
-    {
-
-        while(powerUpDurations[powerUpType] > 0)
-        {
-            powerUpDurations[powerUpType] -= Time.deltaTime;
-            Debug.Log(powerUpType.ToString() + ": " +  powerUpDurations[powerUpType]);
-            yield return null;
-        }
-
-        // Remove the power-up effect
-        RemoveEffect(powerUpType);
-
-        // Remove the coroutine from the activePowerUps dictionary
-        activePowerUps.Remove(powerUpType);
-        powerUpDurations.Remove(powerUpType);
-    }
-
-    // Apply the effect based on the power-up type
-    private void ApplyEffect(PowerUpType powerUpType, float buffValue)
-    {
-        switch (powerUpType)
-        {
-            case PowerUpType.SpeedBoost:
-                ApplySpeedBoost(buffValue);
-                break;
-            case PowerUpType.Invincibility:
-                break;
-            case PowerUpType.HealthPack:
-                break;
-                // Add cases for other power-up types as needed
-        }
-    }
-
-    // Remove the effect based on the power-up type
-    private void RemoveEffect(PowerUpType powerUpType)
-    {
-        switch (powerUpType)
-        {
-            case PowerUpType.SpeedBoost:
-                RemoveSpeedBoost();
-                break;
-                // Add cases for other power-up types as needed
-        }
-    }
-
-    private void ApplySpeedBoost(float buffValue)
-    {
-        // Apply the speed boost effect to the car
-        // For example, increase car speed temporarily
-        // You can adjust the speed boost duration and intensity as needed
-        speed *= buffValue;
-    }
-
-    private void RemoveSpeedBoost()
-    {
-        // Remove the speed boost effect
-        // For example, reset the car speed to its normal value
-        speed = minSpeed;
-    }
 }

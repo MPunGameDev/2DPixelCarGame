@@ -9,11 +9,13 @@ public class Player
     Car currentPlayerCar;
     public Rigidbody2D rb;
     public SpriteRenderer renderer;
+    public float health { get; set; }
 
     public void SetCar(Car car)
     {
         currentPlayerCar = car;
     }
+
 
     public Car GetCar() { return currentPlayerCar; }
 }

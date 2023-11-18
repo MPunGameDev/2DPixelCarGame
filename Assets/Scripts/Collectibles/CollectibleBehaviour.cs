@@ -73,7 +73,9 @@ public class CollectibleBehaviour : MonoBehaviour
         // You can implement different power-up durations and effects here
 
         // Apply the power-up effect to the player (for example, speed boost)
-        tc.ApplyPowerUpEffect(powerUpType, CollectibleDatabase.GetPowerUp(powerUpType).Duration);
+        //tc.ApplyPowerUpEffect(powerUpType, CollectibleDatabase.GetPowerUp(powerUpType).Duration);
+
+        PowerUpHandler.Instance.ApplyPowerUpEffect(powerUpType, CollectibleDatabase.GetPowerUp(powerUpType).Duration);
         CollectibleSpawner.spawnedCollectibles.Remove(gameObject);
         Destroy(gameObject);
     }

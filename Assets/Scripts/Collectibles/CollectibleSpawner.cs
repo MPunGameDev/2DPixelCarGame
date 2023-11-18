@@ -14,7 +14,7 @@ public class CollectibleSpawner : MonoBehaviour
         if (spawnedCollectibles.Count == 0 || spawnedCollectibles[0].transform.position.y < transform.position.y - collectibleDestroyDistance)
         {
             // Change the collectible name you want to spawn here
-            string collectibleNameToSpawn = ChooseCollectibleUpToSpawn();
+            string collectibleNameToSpawn = ChooseCollectibleToSpawn();
             SpawnCollectibleAhead(collectibleNameToSpawn); // CHANGE THIS BACK
         }
 
@@ -65,7 +65,7 @@ public class CollectibleSpawner : MonoBehaviour
         }
     }
 
-    private string ChooseCollectibleUpToSpawn()
+    private string ChooseCollectibleToSpawn()
     {
         List<string> availablePowerUps = new();
 

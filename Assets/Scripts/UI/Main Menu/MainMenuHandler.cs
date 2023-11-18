@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class MainMenuHandler : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class MainMenuHandler : MonoBehaviour
     public GameObject PlayerStatsPanel;
     public GameObject SelectedCarPanel;
     public GameObject MainMenuButtons;
+    public GameObject CoinsText;
 
     [Header("Options Menu + Components")]
     public GameObject OptionsMenu;
@@ -33,11 +35,15 @@ public class MainMenuHandler : MonoBehaviour
         {
             playerData.AddCarToPlayer(CarManager.GetCar(CarManager.CarType.BlueF1Car));
             playerData.SetCar(playerData.GetCarList()[0]);
+            playerData.health = playerData.GetCar().Health;
 
             FirstTimeLogon.SetActive(true);
             MainMenuButtons.SetActive(false);
             SelectedCarPanel.SetActive(false);
         }
+
+        TextMeshProUGUI coins = CoinsText.GetComponent<TextMeshProUGUI>();
+        coins.text = playerData.GetCoins().ToString();
 
     }
 
